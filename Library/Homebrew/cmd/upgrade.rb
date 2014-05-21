@@ -98,4 +98,3 @@ module Homebrew extend self
   end
 
 end
-

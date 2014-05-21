@@ -213,15 +213,15 @@ class Keg < Pathname
 
   protected
 
-  def resolve_any_conflicts dst, mode
+  def resolve_any_conflicts dst
     # if it isn't a directory then a severe conflict is about to happen. Let
     # it, and the exception that is generated will message to the user about
     # the situation
     if dst.symlink? and dst.directory?
       src = (dst.parent+dst.readlink).cleanpath
       keg = Keg.for(src)
-      dst.unlink unless mode.dry_run
-      keg.link_dir(src, mode) { :mkpath }
+      dst.unlink
+      keg.link_dir(src) { :mkpath }
       return true
     end
   rescue NotAKegError
@@ -255,7 +255,7 @@ class Keg < Pathname
   end
 
   # symlinks the contents of self+foo recursively into #{HOMEBREW_PREFIX}/foo
-  def link_dir foo, mode
+  def link_dir foo, mode=OpenStruct.new
     root = self+foo
     return unless root.exist?
     root.find do |src|
@@ -301,9 +301,9 @@ class Keg < Pathname
         when :skip_dir
           Find.prune
         when :mkpath
-          dst.mkpath unless resolve_any_conflicts(dst, mode)
+          dst.mkpath unless resolve_any_conflicts(dst)
         else
-          unless resolve_any_conflicts(dst, mode)
+          unless resolve_any_conflicts(dst)
             make_relative_symlink dst, src, mode
             Find.prune
           end

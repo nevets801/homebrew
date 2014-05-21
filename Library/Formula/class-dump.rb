@@ -1,4 +1,4 @@
-require 'formula'/Applications/SyncMate.app/
+require 'formula'
 
 class ClassDump < Formula
   homepage 'http://stevenygard.com/projects/class-dump/'
@@ -13,4 +13,3 @@ class ClassDump < Formula
     bin.install "build/Release/class-dump"
   end
 end
-
